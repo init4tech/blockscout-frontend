@@ -38,6 +38,7 @@ export { default as rewards } from './rewards';
 export { default as rollbar } from './rollbar';
 export { default as rollup } from './rollup';
 export { default as safe } from './safe';
+export { default as signetActivity } from './signetActivity';
 export { default as sol2uml } from './sol2uml';
 export { default as stats } from './stats';
 export { default as suave } from './suave';

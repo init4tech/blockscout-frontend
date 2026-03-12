@@ -22,6 +22,8 @@ import BlockDeposits from 'ui/block/BlockDeposits';
 import BlockDetails from 'ui/block/BlockDetails';
 import BlockInternalTxs from 'ui/block/BlockInternalTxs';
 import BlockWithdrawals from 'ui/block/BlockWithdrawals';
+import SignetActivityTab from 'ui/block/signetActivity/SignetActivityTab';
+import useBlockSignetActivityQuery from 'ui/block/signetActivity/useBlockSignetActivityQuery';
 import useBlockBlobTxsQuery from 'ui/block/useBlockBlobTxsQuery';
 import useBlockDepositsQuery from 'ui/block/useBlockDepositsQuery';
 import useBlockInternalTxsQuery from 'ui/block/useBlockInternalTxsQuery';
@@ -47,6 +49,7 @@ const TAB_LIST_PROPS = {
 const TABS_HEIGHT = 88;
 
 const beaconChainFeature = config.features.beaconChain;
+const signetActivityFeature = config.features.signetActivity;
 
 const BlockPageContent = () => {
   const router = useRouter();
@@ -61,6 +64,7 @@ const BlockPageContent = () => {
   const blockDepositsQuery = useBlockDepositsQuery({ heightOrHash, blockQuery, tab });
   const blockBlobTxsQuery = useBlockBlobTxsQuery({ heightOrHash, blockQuery, tab });
   const blockInternalTxsQuery = useBlockInternalTxsQuery({ heightOrHash, blockQuery, tab });
+  const blockSignetActivityQuery = useBlockSignetActivityQuery({ heightOrHash, tab, isBlockLoaded: !blockQuery.isPlaceholderData });
 
   const hasPagination = !isMobile && (
     (tab === 'txs' && blockTxsQuery.pagination.isVisible) ||
@@ -134,7 +138,15 @@ const BlockPageContent = () => {
           </>
         ),
       } : null,
-  ].filter(Boolean)), [ blockBlobTxsQuery, blockDepositsQuery, blockInternalTxsQuery, blockQuery, blockTxsQuery, blockWithdrawalsQuery, hasPagination ]);
+    signetActivityFeature.isEnabled ?
+      {
+        id: 'signet_activity',
+        title: 'Signet Activity',
+        component: (
+          <SignetActivityTab query={ blockSignetActivityQuery }/>
+        ),
+      } : null,
+  ].filter(Boolean)), [ blockBlobTxsQuery, blockDepositsQuery, blockInternalTxsQuery, blockQuery, blockSignetActivityQuery, blockTxsQuery, blockWithdrawalsQuery, hasPagination ]);
 
   let pagination;
   if (tab === 'txs') {
